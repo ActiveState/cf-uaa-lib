@@ -122,12 +122,12 @@ class Info
   # token's "aud" attribute does not contain one or more of the audience_ids,
   # raises AuthError -- meaning the token is not for this audience.
   # @param (see Misc.server)
-  # @param [String] token an access token as retrieved by {TokenIssuer}. See
+  # @param [String] token an access/refresh token as retrieved by {TokenIssuer}. See
   #   also {TokenInfo}.
-  # @param [String] token_type as retrieved by {TokenIssuer}. See {TokenInfo}.
+  # @param [String] token_type_hint either access_token or refresh_token
   # @return [Hash] contents of the token
-  def check_token(client_id, client_secret, token, token_type = "bearer", audience_ids = nil)
-    form_data = Util.encode_form(:token_type => token_type, :token => token)
+  def check_token(client_id, client_secret, token, token_type_hint = "bearer", audience_ids = nil)
+    form_data = Util.encode_form(:token_type_hint => token_type_hint, :token => token)
     headers = {'authorization' => Http.basic_auth(client_id, client_secret), 'accept' => JSON_UTF8}
     reply = json_parse_reply(key_style, *http_post(target, '/check_token', form_data, headers))
     auds = Util.arglist(reply[:aud] || reply['aud'])
